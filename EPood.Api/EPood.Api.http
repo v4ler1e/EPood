@@ -1,0 +1,6 @@
+@EPood.Api_HostAddress = http://localhost:5298
+
+GET {{EPood.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,63 @@
+.card {
+  border-radius: 12px;
+}
+
+.card-header {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.table {
+  background-color: white;
+}
+
+button {
+  min-width: 70px;
+}
+
+input,
+select {
+  border-radius: 8px;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+.dark-mode {
+  background-color: #1f1f1f;
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+  .dark-mode .card {
+    background-color: #2b2b2b;
+    color: white;
+    border-color: #444;
+  }
+
+  .dark-mode .card-header {
+    background-color: #333;
+    color: white;
+    border-color: #444;
+  }
+
+  .dark-mode .table {
+    background-color: #2b2b2b;
+    color: white;
+  }
+
+    .dark-mode .table td,
+    .dark-mode .table th {
+      background-color: #2b2b2b;
+      color: white;
+      border-color: #555;
+    }
+
+  .dark-mode input,
+  .dark-mode select {
+    background-color: #333;
+    color: white;
+    border-color: #555;
+  }

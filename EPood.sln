@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPood.Api", "EPood.Api\EPood.Api.csproj", "{D81BF5B3-D3FD-44CF-BA90-08092E689BAC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPood.Domain", "EPood.Domain\EPood.Domain.csproj", "{FA609A6A-0C77-453D-BCFC-31B824F9E4CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPood.Application", "EPood.Application\EPood.Application.csproj", "{E8FEED4E-EC85-43AF-991F-8CD25D07A7E1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPood.Infrastructure", "EPood.Infrastructure\EPood.Infrastructure.csproj", "{0E4A35B1-E351-4617-8223-4D5FDC106D42}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPood.WpfApplication", "EPood.WpfApplication\EPood.WpfApplication.csproj", "{6A599F0E-772B-4979-84AF-280C22947EE7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPood.Tests", "EPood.Tests\EPood.Tests.csproj", "{660E5CAB-0381-46A6-86F5-847E11310324}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPood.Blazor", "EPood.Blazor\EPood.Blazor.csproj", "{B9177BCC-6E29-4156-AC4D-B1C97DA82EA8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D81BF5B3-D3FD-44CF-BA90-08092E689BAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D81BF5B3-D3FD-44CF-BA90-08092E689BAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D81BF5B3-D3FD-44CF-BA90-08092E689BAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D81BF5B3-D3FD-44CF-BA90-08092E689BAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA609A6A-0C77-453D-BCFC-31B824F9E4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA609A6A-0C77-453D-BCFC-31B824F9E4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA609A6A-0C77-453D-BCFC-31B824F9E4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA609A6A-0C77-453D-BCFC-31B824F9E4CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8FEED4E-EC85-43AF-991F-8CD25D07A7E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8FEED4E-EC85-43AF-991F-8CD25D07A7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8FEED4E-EC85-43AF-991F-8CD25D07A7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8FEED4E-EC85-43AF-991F-8CD25D07A7E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E4A35B1-E351-4617-8223-4D5FDC106D42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E4A35B1-E351-4617-8223-4D5FDC106D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E4A35B1-E351-4617-8223-4D5FDC106D42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E4A35B1-E351-4617-8223-4D5FDC106D42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A599F0E-772B-4979-84AF-280C22947EE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A599F0E-772B-4979-84AF-280C22947EE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A599F0E-772B-4979-84AF-280C22947EE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A599F0E-772B-4979-84AF-280C22947EE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{660E5CAB-0381-46A6-86F5-847E11310324}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{660E5CAB-0381-46A6-86F5-847E11310324}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{660E5CAB-0381-46A6-86F5-847E11310324}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{660E5CAB-0381-46A6-86F5-847E11310324}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9177BCC-6E29-4156-AC4D-B1C97DA82EA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9177BCC-6E29-4156-AC4D-B1C97DA82EA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9177BCC-6E29-4156-AC4D-B1C97DA82EA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9177BCC-6E29-4156-AC4D-B1C97DA82EA8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A0387F9-BC51-4B39-B737-0D209F6C4B3D}
+	EndGlobalSection
+EndGlobal

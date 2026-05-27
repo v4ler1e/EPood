@@ -1,0 +1,8 @@
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.nav-link {
+  cursor: pointer;
+}
