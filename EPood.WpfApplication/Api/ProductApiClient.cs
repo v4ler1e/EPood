@@ -16,7 +16,37 @@ public class ProductApiClient
             new Uri("https://localhost:7106/");
     }
 
-    public async Task<List<ProductModel>> GetProducts(string? search = null)
+    public async Task<List<OrderModel>> GetOrders()
+    {
+        var response =
+            await _httpClient.GetFromJsonAsync<OrderListResponse>(
+                "api/Orders?page=1&pageSize=100");
+
+        return response?.Items ?? new List<OrderModel>();
+    }
+
+    public async Task AddOrder(SaveOrderModel order)
+    {
+        await _httpClient.PostAsJsonAsync(
+            "api/Orders",
+            order);
+    }
+
+    public async Task UpdateOrder(SaveOrderModel order)
+    {
+        await _httpClient.PutAsJsonAsync(
+            $"api/Orders/{order.Id}",
+            order);
+    }
+
+    public async Task DeleteOrder(int id)
+    {
+        await _httpClient.DeleteAsync(
+            $"api/Orders/{id}");
+    }
+
+    public async Task<List<ProductModel>> GetProducts(
+        string? search = null)
     {
         var url = "api/Products";
 
@@ -35,9 +65,12 @@ public class ProductApiClient
     {
         await _httpClient.DeleteAsync($"api/Products/{id}");
     }
+
     public async Task AddProduct(ProductModel product)
     {
-        await _httpClient.PostAsJsonAsync("api/Products", product);
+        await _httpClient.PostAsJsonAsync(
+            "api/Products",
+            product);
     }
 
     public async Task UpdateProduct(ProductModel product)
@@ -46,6 +79,7 @@ public class ProductApiClient
             $"api/Products/{product.Id}",
             product);
     }
+
     public async Task<List<CategoryModel>> GetCategories()
     {
         var categories =

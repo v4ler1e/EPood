@@ -1,45 +1,40 @@
 ﻿<Window x:Class="EPood.WpfApplication.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EPood.WpfApplication"
-        mc:Ignorable="d"
-        Title="E-Pood" Height="500" Width="950">
+        Title="E-Pood" Height="780" Width="1050">
 
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Vertical" Margin="0,0,0,10">
+
+            <TextBlock Text="Products" FontWeight="Bold" Margin="0,0,0,5"/>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 
                 <StackPanel Margin="0,0,10,0">
                     <TextBlock Text="Name"/>
-                    <TextBox Width="120"
-                             Text="{Binding NewProduct.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Width="120" Text="{Binding NewProduct.Name}"/>
                 </StackPanel>
 
                 <StackPanel Margin="0,0,10,0">
                     <TextBlock Text="Description"/>
-                    <TextBox Width="160"
-                             Text="{Binding NewProduct.Description, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Width="160" Text="{Binding NewProduct.Description}"/>
                 </StackPanel>
 
                 <StackPanel Margin="0,0,10,0">
                     <TextBlock Text="Price"/>
-                    <TextBox Width="80"
-                             Text="{Binding NewProduct.Price, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Width="80" Text="{Binding NewProduct.Price}"/>
                 </StackPanel>
 
                 <StackPanel Margin="0,0,10,0">
                     <TextBlock Text="Stock"/>
-                    <TextBox Width="80"
-                             Text="{Binding NewProduct.Stock, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Width="80" Text="{Binding NewProduct.Stock}"/>
                 </StackPanel>
 
                 <StackPanel Margin="0,0,10,0">
@@ -48,43 +43,51 @@
                               ItemsSource="{Binding Categories}"
                               DisplayMemberPath="Name"
                               SelectedValuePath="Id"
-                              SelectedValue="{Binding NewProduct.CategoryId, UpdateSourceTrigger=PropertyChanged}"/>
+                              SelectedValue="{Binding NewProduct.CategoryId}"/>
                 </StackPanel>
 
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
 
                 <StackPanel Margin="0,0,10,0">
                     <TextBlock Text="Search"/>
-                    <TextBox Width="200"
-                             Height="30"
-                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Width="200" Height="30" Text="{Binding SearchText}"/>
                 </StackPanel>
 
-                <Button Content="Load Products"
-                        Width="120"
-                        Height="30"
-                        Margin="0,18,10,0"
-                        Command="{Binding LoadCommand}"/>
+                <Button Content="Load Data" Width="120" Height="30" Margin="0,18,10,0" Command="{Binding LoadCommand}"/>
+                <Button Content="Add Product" Width="120" Height="30" Margin="0,18,10,0" Command="{Binding AddCommand}"/>
+                <Button Content="Update Product" Width="120" Height="30" Margin="0,18,10,0" Command="{Binding UpdateCommand}"/>
+                <Button Content="Delete Product" Width="120" Height="30" Margin="0,18,0,0" Command="{Binding DeleteCommand}"/>
 
-                <Button Content="Add Product"
-                        Width="120"
-                        Height="30"
-                        Margin="0,18,10,0"
-                        Command="{Binding AddCommand}"/>
+            </StackPanel>
 
-                <Button Content="Update Product"
-                        Width="120"
-                        Height="30"
-                        Margin="0,18,10,0"
-                        Command="{Binding UpdateCommand}"/>
+            <TextBlock Text="Orders" FontWeight="Bold" Margin="0,0,0,5"/>
 
-                <Button Content="Delete Selected"
-                        Width="120"
-                        Height="30"
-                        Margin="0,18,0,0"
-                        Command="{Binding DeleteCommand}"/>
+            <StackPanel Orientation="Horizontal">
+
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Customer"/>
+                    <TextBox Width="160" Text="{Binding NewOrder.CustomerName}"/>
+                </StackPanel>
+
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Product"/>
+                    <ComboBox Width="160"
+                              ItemsSource="{Binding Products}"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id"
+                              SelectedValue="{Binding NewOrder.ProductId}"/>
+                </StackPanel>
+
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Quantity"/>
+                    <TextBox Width="80" Text="{Binding NewOrder.Quantity}"/>
+                </StackPanel>
+
+                <Button Content="Add Order" Width="120" Height="30" Margin="0,18,10,0" Command="{Binding AddOrderCommand}"/>
+                <Button Content="Update Order" Width="120" Height="30" Margin="0,18,10,0" Command="{Binding UpdateOrderCommand}"/>
+                <Button Content="Delete Order" Width="120" Height="30" Margin="0,18,0,0" Command="{Binding DeleteOrderCommand}"/>
 
             </StackPanel>
 
@@ -94,35 +97,33 @@
                   ItemsSource="{Binding Products}"
                   SelectedItem="{Binding SelectedProduct}"
                   AutoGenerateColumns="False"
-                  IsReadOnly="False"
                   CanUserAddRows="False">
 
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="150"/>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="220"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="100"/>
+                <DataGridTextColumn Header="Stock" Binding="{Binding Stock}" Width="100"/>
+                <DataGridTextColumn Header="Category" Binding="{Binding CategoryName}" Width="150"/>
+            </DataGrid.Columns>
 
-                <DataGridTextColumn Header="Id"
-                                    Binding="{Binding Id}"
-                                    Width="60"/>
+        </DataGrid>
 
-                <DataGridTextColumn Header="Name"
-                                    Binding="{Binding Name}"
-                                    Width="150"/>
+        <DataGrid Grid.Row="2"
+                  Margin="0,20,0,0"
+                  ItemsSource="{Binding Orders}"
+                  SelectedItem="{Binding SelectedOrder}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False">
 
-                <DataGridTextColumn Header="Description"
-                                    Binding="{Binding Description}"
-                                    Width="220"/>
-
-                <DataGridTextColumn Header="Price"
-                                    Binding="{Binding Price}"
-                                    Width="100"/>
-
-                <DataGridTextColumn Header="Stock"
-                                    Binding="{Binding Stock}"
-                                    Width="100"/>
-
-                <DataGridTextColumn Header="Category"
-                                    Binding="{Binding CategoryName}"
-                                    Width="150"/>
-
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60"/>
+                <DataGridTextColumn Header="Customer" Binding="{Binding CustomerName}" Width="180"/>
+                <DataGridTextColumn Header="Date" Binding="{Binding CreatedAt}" Width="180"/>
+                <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="180"/>
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="100"/>
+                <DataGridTextColumn Header="Total" Binding="{Binding TotalPrice}" Width="120"/>
             </DataGrid.Columns>
 
         </DataGrid>

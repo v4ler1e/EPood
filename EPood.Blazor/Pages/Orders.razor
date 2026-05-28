@@ -1,0 +1,154 @@
+﻿@page "/orders"
+
+@using EPood.Blazor.Models
+@using EPood.Blazor.Services
+
+@inject ProductService ProductService
+
+<h3>Orders</h3>
+
+<EditForm Model="OrderForm" OnValidSubmit="SaveOrder">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-2">
+        <label>Customer name</label>
+        <InputText class="form-control" @bind-Value="OrderForm.CustomerName" />
+    </div>
+
+    <div class="mb-2">
+        <label>Product</label>
+        <InputSelect class="form-control" @bind-Value="OrderForm.ProductId">
+            @foreach (var product in Products)
+            {
+                <option value="@product.Id">@product.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-2">
+        <label>Quantity</label>
+        <InputNumber class="form-control" @bind-Value="OrderForm.Quantity" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">
+        @(OrderForm.Id == 0 ? "Add" : "Update")
+    </button>
+
+    <button class="btn btn-secondary ms-2" type="button" @onclick="ClearForm">
+        Clear
+    </button>
+</EditForm>
+
+<br />
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Total price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var order in OrderList)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.CustomerName</td>
+                <td>@order.CreatedAt.ToString("g")</td>
+                <td>@order.ProductName</td>
+                <td>@order.Quantity</td>
+                <td>@order.TotalPrice</td>
+                <td>
+                    <button class="btn btn-warning btn-sm"
+                            @onclick="() => EditOrder(order)">
+                        Edit
+                    </button>
+
+                    <button class="btn btn-danger btn-sm ms-2"
+                            @onclick="() => DeleteOrder(order.Id)">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<OrderModel> OrderList = new();
+
+    private List<ProductModel> Products = new();
+
+    private SaveOrderModel OrderForm = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts();
+        await LoadOrders();
+
+        if (Products.Any())
+        {
+            OrderForm.ProductId = Products.First().Id;
+        }
+    }
+
+    private async Task LoadOrders()
+    {
+        OrderList = await ProductService.GetOrders();
+    }
+
+    private async Task LoadProducts()
+    {
+        var result = await ProductService.GetProducts(null, 1, 100);
+        Products = result.Items;
+    }
+
+    private async Task SaveOrder()
+    {
+        if (OrderForm.Id == 0)
+        {
+            await ProductService.AddOrder(OrderForm);
+        }
+        else
+        {
+            await ProductService.UpdateOrder(OrderForm);
+        }
+
+        ClearForm();
+
+        await LoadOrders();
+    }
+
+    private void EditOrder(OrderModel order)
+    {
+        OrderForm = new SaveOrderModel
+            {
+                Id = order.Id,
+                CustomerName = order.CustomerName,
+                ProductId = order.ProductId,
+                Quantity = order.Quantity
+            };
+    }
+
+    private async Task DeleteOrder(int id)
+    {
+        await ProductService.DeleteOrder(id);
+        await LoadOrders();
+    }
+
+    private void ClearForm()
+    {
+        OrderForm = new SaveOrderModel
+            {
+                ProductId = Products.Any() ? Products.First().Id : 0,
+                Quantity = 1
+            };
+    }
+}
