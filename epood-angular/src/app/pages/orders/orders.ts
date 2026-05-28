@@ -17,8 +17,14 @@ export class OrdersComponent implements OnInit {
   orders = signal<OrderModel[]>([]);
   products = signal<ProductModel[]>([]);
 
+  searchText = '';
+  page = 1;
+  pageSize = 5;
+  totalPages = 1;
+
   message = '';
   errorMessage = '';
+  isLoading = false;
 
   orderForm: SaveOrderModel = {
     id: 0,
@@ -35,13 +41,20 @@ export class OrdersComponent implements OnInit {
   }
 
   loadOrders(): void {
-    this.productService.getOrders()
+    this.isLoading = true;
+
+    this.productService.getOrders(this.searchText, this.page, this.pageSize)
       .subscribe({
-        next: (response: OrderModel[]) => {
-          this.orders.set(response);
+        next: (response: any) => {
+          const items = response.items ?? response.Items ?? response;
+
+          this.orders.set(items);
+          this.totalPages = response.totalPages ?? response.TotalPages ?? 1;
+          this.isLoading = false;
         },
         error: () => {
           this.errorMessage = 'Failed to load orders.';
+          this.isLoading = false;
         }
       });
   }
@@ -61,6 +74,25 @@ export class OrdersComponent implements OnInit {
           this.errorMessage = 'Failed to load products.';
         }
       });
+  }
+
+  searchOrders(): void {
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  nextPage(): void {
+    if (this.page < this.totalPages) {
+      this.page++;
+      this.loadOrders();
+    }
+  }
+
+  previousPage(): void {
+    if (this.page > 1) {
+      this.page--;
+      this.loadOrders();
+    }
   }
 
   saveOrder(): void {

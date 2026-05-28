@@ -17,10 +17,28 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get(
+        [FromQuery] string? search,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5)
     {
-        var orders = await _dbContext.Orders
+        var query = _dbContext.Orders
             .Include(x => x.Product)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(x =>
+                x.CustomerName.Contains(search) ||
+                x.Product!.Name.Contains(search));
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var orders = await query
+            .OrderByDescending(x => x.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(x => new
             {
                 x.Id,
@@ -33,7 +51,14 @@ public class OrdersController : ControllerBase
             })
             .ToListAsync();
 
-        return Ok(orders);
+        return Ok(new
+        {
+            Items = orders,
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = totalCount,
+            TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+        });
     }
 
     [HttpGet("{id}")]

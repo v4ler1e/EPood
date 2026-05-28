@@ -55,8 +55,14 @@ export class ProductService {
     return this.http.delete(`${this.categoriesUrl}/${id}`);
   }
 
-  getOrders(): Observable<any> {
-    return this.http.get<any>(this.ordersUrl);
+  getOrders(
+    search: string = '',
+    page: number = 1,
+    pageSize: number = 5
+  ): Observable<any> {
+    return this.http.get<any>(
+      `${this.ordersUrl}?search=${search}&page=${page}&pageSize=${pageSize}`
+    );
   }
 
   addOrder(order: SaveOrderModel): Observable<any> {
