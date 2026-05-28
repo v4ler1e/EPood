@@ -24,6 +24,18 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     private string _searchText = "";
 
+    private string _orderSearchText = "";
+
+    public string OrderSearchText
+    {
+        get => _orderSearchText;
+        set
+        {
+            _orderSearchText = value;
+            OnPropertyChanged(nameof(OrderSearchText));
+        }
+    }
+
     public string SearchText
     {
         get => _searchText;
@@ -97,7 +109,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         Orders.Clear();
 
-        var orders = await _apiClient.GetOrders();
+        var orders = await _apiClient.GetOrders(OrderSearchText);
 
         foreach (var order in orders)
         {

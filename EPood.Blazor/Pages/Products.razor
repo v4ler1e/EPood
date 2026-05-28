@@ -68,12 +68,12 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Id</th>
-            <th>Name</th>
+            <th @onclick='() => SortProducts("id")'>Id</th>
+            <th @onclick='() => SortProducts("name")'>Name</th>
             <th>Description</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Category</th>
+            <th @onclick='() => SortProducts("price")'>Price</th>
+            <th @onclick='() => SortProducts("stock")'>Stock</th>
+            <th @onclick='() => SortProducts("category")'>Category</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -135,6 +135,10 @@
 
     private int TotalPages = 1;
 
+    private string SortBy = "";
+
+    private bool Descending = false;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadProducts();
@@ -146,7 +150,9 @@
         var result = await ProductService.GetProducts(
             SearchText,
             Page,
-            PageSize);
+            PageSize,
+            SortBy,
+            Descending);
 
         ProductList = result.Items;
         TotalPages = result.TotalPages;
@@ -154,6 +160,22 @@
 
     private async Task SearchProducts()
     {
+        Page = 1;
+        await LoadProducts();
+    }
+
+    private async Task SortProducts(string sortField)
+    {
+        if (SortBy == sortField)
+        {
+            Descending = !Descending;
+        }
+        else
+        {
+            SortBy = sortField;
+            Descending = false;
+        }
+
         Page = 1;
         await LoadProducts();
     }

@@ -16,11 +16,17 @@ public class ProductApiClient
             new Uri("https://localhost:7106/");
     }
 
-    public async Task<List<OrderModel>> GetOrders()
+    public async Task<List<OrderModel>> GetOrders(string? search = null)
     {
+        var url = "api/Orders?page=1&pageSize=100";
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            url += $"&search={search}";
+        }
+
         var response =
-            await _httpClient.GetFromJsonAsync<OrderListResponse>(
-                "api/Orders?page=1&pageSize=100");
+            await _httpClient.GetFromJsonAsync<OrderListResponse>(url);
 
         return response?.Items ?? new List<OrderModel>();
     }

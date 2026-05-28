@@ -15,14 +15,21 @@ public class ProductService
     public async Task<ProductListResponse> GetProducts(
         string? search = null,
         int page = 1,
-        int pageSize = 5)
+        int pageSize = 5,
+        string? sortBy = null,
+        bool descending = false)
     {
         var url =
-            $"https://localhost:7106/api/Products?page={page}&pageSize={pageSize}";
+            $"https://localhost:7106/api/Products?page={page}&pageSize={pageSize}&descending={descending}";
 
         if (!string.IsNullOrWhiteSpace(search))
         {
             url += $"&search={search}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(sortBy))
+        {
+            url += $"&sortBy={sortBy}";
         }
 
         var response =
@@ -59,12 +66,30 @@ public class ProductService
             $"https://localhost:7106/api/Products/{id}");
     }
 
-    public async Task<List<OrderModel>> GetOrders()
+    public async Task<OrderListResponse> GetOrders(
+        string? search = null,
+        int page = 1,
+        int pageSize = 5,
+        string? sortBy = null,
+        bool descending = false)
     {
-        var response = await _httpClient.GetFromJsonAsync<OrderListResponse>(
-            "https://localhost:7106/api/Orders?page=1&pageSize=100");
+        var url =
+            $"https://localhost:7106/api/Orders?page={page}&pageSize={pageSize}&descending={descending}";
 
-        return response?.Items ?? new List<OrderModel>();
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            url += $"&search={search}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(sortBy))
+        {
+            url += $"&sortBy={sortBy}";
+        }
+
+        var response =
+            await _httpClient.GetFromJsonAsync<OrderListResponse>(url);
+
+        return response ?? new OrderListResponse();
     }
 
     public async Task AddOrder(SaveOrderModel order)
