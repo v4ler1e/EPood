@@ -58,10 +58,12 @@ export class ProductService {
   getOrders(
     search: string = '',
     page: number = 1,
-    pageSize: number = 5
+    pageSize: number = 5,
+    sortBy: string = '',
+    descending: boolean = false
   ): Observable<any> {
     return this.http.get<any>(
-      `${this.ordersUrl}?search=${search}&page=${page}&pageSize=${pageSize}`
+      `${this.ordersUrl}?search=${search}&page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&descending=${descending}`
     );
   }
 

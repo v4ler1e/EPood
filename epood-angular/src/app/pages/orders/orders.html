@@ -77,11 +77,11 @@
     <thead class="table-dark">
       <tr>
         <th>Id</th>
-        <th>Customer</th>
-        <th>Date</th>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Total price</th>
+        <th (click)="sortOrders('customer')">Customer</th>
+        <th (click)="sortOrders('date')">Date</th>
+        <th (click)="sortOrders('product')">Product</th>
+        <th (click)="sortOrders('quantity')">Quantity</th>
+        <th (click)="sortOrders('totalPrice')">Total price</th>
         <th style="width: 180px;">Actions</th>
       </tr>
     </thead>

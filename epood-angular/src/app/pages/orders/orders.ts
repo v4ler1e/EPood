@@ -21,6 +21,8 @@ export class OrdersComponent implements OnInit {
   page = 1;
   pageSize = 5;
   totalPages = 1;
+  sortBy = '';
+  descending = false;
 
   message = '';
   errorMessage = '';
@@ -43,7 +45,13 @@ export class OrdersComponent implements OnInit {
   loadOrders(): void {
     this.isLoading = true;
 
-    this.productService.getOrders(this.searchText, this.page, this.pageSize)
+    this.productService.getOrders(
+      this.searchText,
+      this.page,
+      this.pageSize,
+      this.sortBy,
+      this.descending
+    )
       .subscribe({
         next: (response: any) => {
           const items = response.items ?? response.Items ?? response;
@@ -77,6 +85,18 @@ export class OrdersComponent implements OnInit {
   }
 
   searchOrders(): void {
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  sortOrders(sortField: string): void {
+    if (this.sortBy === sortField) {
+      this.descending = !this.descending;
+    } else {
+      this.sortBy = sortField;
+      this.descending = false;
+    }
+
     this.page = 1;
     this.loadOrders();
   }

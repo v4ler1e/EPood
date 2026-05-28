@@ -20,7 +20,9 @@ public class OrdersController : ControllerBase
     public async Task<IActionResult> Get(
         [FromQuery] string? search,
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 5)
+        [FromQuery] int pageSize = 5,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] bool descending = false)
     {
         var query = _dbContext.Orders
             .Include(x => x.Product)
@@ -33,10 +35,34 @@ public class OrdersController : ControllerBase
                 x.Product!.Name.Contains(search));
         }
 
+        query = sortBy switch
+        {
+            "customer" => descending
+                ? query.OrderByDescending(x => x.CustomerName)
+                : query.OrderBy(x => x.CustomerName),
+
+            "product" => descending
+                ? query.OrderByDescending(x => x.Product!.Name)
+                : query.OrderBy(x => x.Product!.Name),
+
+            "quantity" => descending
+                ? query.OrderByDescending(x => x.Quantity)
+                : query.OrderBy(x => x.Quantity),
+
+            "totalPrice" => descending
+                ? query.OrderByDescending(x => x.TotalPrice)
+                : query.OrderBy(x => x.TotalPrice),
+
+            "date" => descending
+                ? query.OrderByDescending(x => x.CreatedAt)
+                : query.OrderBy(x => x.CreatedAt),
+
+            _ => query.OrderByDescending(x => x.CreatedAt)
+        };
+
         var totalCount = await query.CountAsync();
 
         var orders = await query
-            .OrderByDescending(x => x.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(x => new
