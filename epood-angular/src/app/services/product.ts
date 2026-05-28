@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SaveProductModel } from '../models/save-product.model';
 import { CategoryModel } from '../models/category.model';
+import { SaveOrderModel } from '../models/save-order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import { CategoryModel } from '../models/category.model';
 export class ProductService {
   private productsUrl = 'http://localhost:5298/api/Products';
   private categoriesUrl = 'http://localhost:5298/api/Categories';
+  private ordersUrl = 'http://localhost:5298/api/Orders';
 
   constructor(private http: HttpClient) { }
 
@@ -51,5 +53,21 @@ export class ProductService {
 
   deleteCategory(id: number): Observable<any> {
     return this.http.delete(`${this.categoriesUrl}/${id}`);
+  }
+
+  getOrders(): Observable<any> {
+    return this.http.get<any>(this.ordersUrl);
+  }
+
+  addOrder(order: SaveOrderModel): Observable<any> {
+    return this.http.post(this.ordersUrl, order);
+  }
+
+  updateOrder(order: SaveOrderModel): Observable<any> {
+    return this.http.put(`${this.ordersUrl}/${order.id}`, order);
+  }
+
+  deleteOrder(id: number): Observable<any> {
+    return this.http.delete(`${this.ordersUrl}/${id}`);
   }
 }

@@ -1,3 +1,4 @@
+using EPood.Application.Orders.Handlers;
 using EPood.Application.Products.Handlers;
 using EPood.Application.Repositories;
 using EPood.Infrastructure.Data;
@@ -35,11 +36,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<GetProductQueryHandler>();
 builder.Services.AddScoped<ListProductsQueryHandler>();
 builder.Services.AddScoped<SaveProductCommandHandler>();
 builder.Services.AddScoped<DeleteProductCommandHandler>();
+
+builder.Services.AddScoped<GetOrderQueryHandler>();
+builder.Services.AddScoped<ListOrdersQueryHandler>();
+builder.Services.AddScoped<SaveOrderCommandHandler>();
+builder.Services.AddScoped<DeleteOrderCommandHandler>();
 
 var app = builder.Build();
 
