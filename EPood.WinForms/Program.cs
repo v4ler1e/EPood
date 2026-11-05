@@ -11,6 +11,8 @@ internal static class Program
             BaseAddress = new Uri("http://localhost:5298/"),
             Timeout = TimeSpan.FromSeconds(15)
         };
-        System.Windows.Forms.Application.Run(new ProductsForm(new ProductApiClient(http)));
+        using var form = new ProductsForm();
+        _ = new ProductsPresenter(form, new ProductApiClient(http));
+        System.Windows.Forms.Application.Run(form);
     }
 }

@@ -1,12 +1,11 @@
+using EPood.Application.Common;
+using EPood.Application.Products.Commands;
+using EPood.Application.Products.Dtos;
+
 namespace EPood.WinForms;
 
-internal sealed class ProductsForm : Form
+internal sealed class ProductsForm : Form, IProductsView
 {
-    private readonly ProductApiClient _api;
-    private int _page = 1;
-    private int _totalPages;
-    private string _activeSearch = "";
-
     private readonly DataGridView _products = new()
     {
         Dock = DockStyle.Fill,
@@ -17,71 +16,83 @@ internal sealed class ProductsForm : Form
         MultiSelect = false,
         AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
     };
-    private readonly Button _refresh = new() { Text = "Refresh", AutoSize = true };
     private readonly TextBox _search = new() { Width = 160, PlaceholderText = "Search products" };
     private readonly Button _find = new() { Text = "Search", AutoSize = true };
+    private readonly Button _refresh = new() { Text = "Refresh", AutoSize = true };
     private readonly Button _previous = new() { Text = "Previous", AutoSize = true, Enabled = false };
     private readonly Button _next = new() { Text = "Next", AutoSize = true, Enabled = false };
-    private readonly Label _status = new() { AutoSize = true, Padding = new Padding(4) };
+    private readonly Button _add = new() { Text = "Add", AutoSize = true };
+    private readonly Button _edit = new() { Text = "Edit", AutoSize = true };
+    private readonly Button _delete = new() { Text = "Delete", AutoSize = true };
+    private readonly ToolStripStatusLabel _status = new();
 
-    public ProductsForm(ProductApiClient api)
+    public event EventHandler? RefreshRequested;
+    public event EventHandler? SearchRequested;
+    public event EventHandler? PreviousPageRequested;
+    public event EventHandler? NextPageRequested;
+    public event EventHandler? AddRequested;
+    public event EventHandler? EditRequested;
+    public event EventHandler? DeleteRequested;
+
+    public string SearchText => _search.Text;
+    public ProductDto? SelectedProduct => _products.CurrentRow?.DataBoundItem as ProductDto;
+
+    public ProductsForm()
     {
-        _api = api;
         Text = "EPood - Products";
-        ClientSize = new Size(820, 480);
+        ClientSize = new Size(920, 500);
+        MinimumSize = new Size(650, 380);
 
         var toolbar = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true };
-        toolbar.Controls.AddRange([_search, _find, _refresh, _previous, _next, _status]);
+        toolbar.Controls.AddRange([_search, _find, _refresh, _previous, _next, _add, _edit, _delete]);
+        var statusBar = new StatusStrip();
+        statusBar.Items.Add(_status);
         Controls.Add(_products);
         Controls.Add(toolbar);
+        Controls.Add(statusBar);
 
-        Shown += async (_, _) => await LoadProducts(1, "");
-        _find.Click += async (_, _) => await LoadProducts(1, _search.Text);
-        _refresh.Click += async (_, _) => await LoadProducts(_page, _activeSearch);
-        _previous.Click += async (_, _) => await LoadProducts(_page - 1, _activeSearch);
-        _next.Click += async (_, _) => await LoadProducts(_page + 1, _activeSearch);
+        Shown += (_, _) => RefreshRequested?.Invoke(this, EventArgs.Empty);
+        _refresh.Click += (_, _) => RefreshRequested?.Invoke(this, EventArgs.Empty);
+        _find.Click += (_, _) => SearchRequested?.Invoke(this, EventArgs.Empty);
+        _previous.Click += (_, _) => PreviousPageRequested?.Invoke(this, EventArgs.Empty);
+        _next.Click += (_, _) => NextPageRequested?.Invoke(this, EventArgs.Empty);
+        _add.Click += (_, _) => AddRequested?.Invoke(this, EventArgs.Empty);
+        _edit.Click += (_, _) => EditRequested?.Invoke(this, EventArgs.Empty);
+        _delete.Click += (_, _) => DeleteRequested?.Invoke(this, EventArgs.Empty);
+        AcceptButton = _find;
     }
 
-    private async Task LoadProducts(int page, string search)
+    public void SetBusy(bool busy, bool hasPrevious, bool hasNext)
     {
-        _find.Enabled = false;
-        _refresh.Enabled = false;
-        _previous.Enabled = false;
-        _next.Enabled = false;
-        _status.Text = "Loading products...";
-        try
-        {
-            var result = await _api.GetProductsAsync(page, search);
-            if (page > Math.Max(1, result.TotalPages))
-            {
-                result = await _api.GetProductsAsync(Math.Max(1, result.TotalPages), search);
-            }
+        _search.Enabled = !busy;
+        _find.Enabled = !busy;
+        _refresh.Enabled = !busy;
+        _previous.Enabled = !busy && hasPrevious;
+        _next.Enabled = !busy && hasNext;
+        _add.Enabled = !busy;
+        _edit.Enabled = !busy;
+        _delete.Enabled = !busy;
+    }
 
-            if (!IsDisposed)
-            {
-                _page = result.Page;
-                _totalPages = result.TotalPages;
-                _activeSearch = search;
-                _products.DataSource = result.Items;
-                _status.Text = $"Page {_page} of {Math.Max(1, _totalPages)} · {result.TotalCount} products";
-            }
-        }
-        catch (Exception ex)
-        {
-            if (!IsDisposed)
-            {
-                _status.Text = $"Could not load products. {ex.Message}";
-            }
-        }
-        finally
-        {
-            if (!IsDisposed)
-            {
-                _find.Enabled = true;
-                _refresh.Enabled = true;
-                _previous.Enabled = _page > 1;
-                _next.Enabled = _page < _totalPages;
-            }
-        }
+    public void ShowProducts(PagedResult<ProductDto> products)
+    {
+        _products.DataSource = products.Items;
+        ShowStatus($"Page {products.Page} of {Math.Max(1, products.TotalPages)} · {products.TotalCount} products");
+    }
+
+    public void ShowStatus(string message) => _status.Text = message;
+
+    public SaveProductCommand? EditProduct(ProductDto? product, List<CategoryOption> categories)
+    {
+        using var editor = new ProductEditorForm(product, categories);
+        return editor.ShowDialog(this) == DialogResult.OK ? editor.Product : null;
+    }
+
+    public bool ConfirmDelete(ProductDto product)
+    {
+        return MessageBox.Show(this,
+            $"Delete {product.Name}? Orders linked to this product will also be deleted.",
+            "Delete product", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+            MessageBoxDefaultButton.Button2) == DialogResult.Yes;
     }
 }
