@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPood.Tests", "EPood.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPood.Blazor", "EPood.Blazor\EPood.Blazor.csproj", "{B9177BCC-6E29-4156-AC4D-B1C97DA82EA8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPood.WinForms", "EPood.WinForms\EPood.WinForms.csproj", "{6B52238F-4FEB-4A4C-9A23-B347E90479E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{B9177BCC-6E29-4156-AC4D-B1C97DA82EA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9177BCC-6E29-4156-AC4D-B1C97DA82EA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9177BCC-6E29-4156-AC4D-B1C97DA82EA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B52238F-4FEB-4A4C-9A23-B347E90479E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B52238F-4FEB-4A4C-9A23-B347E90479E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B52238F-4FEB-4A4C-9A23-B347E90479E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B52238F-4FEB-4A4C-9A23-B347E90479E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
