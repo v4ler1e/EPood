@@ -20,6 +20,8 @@ public class RelayCommand : ICommand
 
     public async void Execute(object? parameter)
     {
-        await _execute();
+        await ExecuteAsync();
     }
+
+    public Task ExecuteAsync() => _execute();
 }

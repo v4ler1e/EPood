@@ -8,12 +8,16 @@ public class ProductApiClient
 {
     private readonly HttpClient _httpClient;
 
-    public ProductApiClient()
+    public ProductApiClient() : this(new HttpClient
     {
-        _httpClient = new HttpClient();
+        BaseAddress = new Uri("https://localhost:7106/")
+    })
+    {
+    }
 
-        _httpClient.BaseAddress =
-            new Uri("https://localhost:7106/");
+    public ProductApiClient(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
     }
 
     public async Task<List<OrderModel>> GetOrders(string? search = null)
@@ -22,7 +26,7 @@ public class ProductApiClient
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            url += $"&search={search}";
+            url += $"&search={Uri.EscapeDataString(search)}";
         }
 
         var response =
@@ -33,22 +37,25 @@ public class ProductApiClient
 
     public async Task AddOrder(SaveOrderModel order)
     {
-        await _httpClient.PostAsJsonAsync(
+        using var response = await _httpClient.PostAsJsonAsync(
             "api/Orders",
             order);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task UpdateOrder(SaveOrderModel order)
     {
-        await _httpClient.PutAsJsonAsync(
+        using var response = await _httpClient.PutAsJsonAsync(
             $"api/Orders/{order.Id}",
             order);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task DeleteOrder(int id)
     {
-        await _httpClient.DeleteAsync(
+        using var response = await _httpClient.DeleteAsync(
             $"api/Orders/{id}");
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task<List<ProductModel>> GetProducts(
@@ -58,7 +65,7 @@ public class ProductApiClient
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            url += $"?search={search}";
+            url += $"?search={Uri.EscapeDataString(search)}";
         }
 
         var response =
@@ -69,21 +76,24 @@ public class ProductApiClient
 
     public async Task DeleteProduct(int id)
     {
-        await _httpClient.DeleteAsync($"api/Products/{id}");
+        using var response = await _httpClient.DeleteAsync($"api/Products/{id}");
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task AddProduct(ProductModel product)
     {
-        await _httpClient.PostAsJsonAsync(
+        using var response = await _httpClient.PostAsJsonAsync(
             "api/Products",
             product);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task UpdateProduct(ProductModel product)
     {
-        await _httpClient.PutAsJsonAsync(
+        using var response = await _httpClient.PutAsJsonAsync(
             $"api/Products/{product.Id}",
             product);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task<List<CategoryModel>> GetCategories()

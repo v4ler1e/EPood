@@ -9,8 +9,8 @@ namespace EPood.WpfApplication.ViewModels;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
-    private readonly ProductApiClient _apiClient = new();
-    private readonly IDialogProvider _dialogProvider = new DialogProvider();
+    private readonly ProductApiClient _apiClient;
+    private readonly IDialogProvider _dialogProvider;
 
     public ObservableCollection<ProductModel> Products { get; set; } = new();
     public ObservableCollection<CategoryModel> Categories { get; set; } = new();
@@ -75,9 +75,15 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public ICommand UpdateOrderCommand { get; }
     public ICommand DeleteOrderCommand { get; }
 
-    public MainWindowViewModel()
+    public MainWindowViewModel() : this(new ProductApiClient(), new DialogProvider())
     {
-        LoadCommand = new RelayCommand(LoadData);
+    }
+
+    public MainWindowViewModel(ProductApiClient apiClient, IDialogProvider dialogProvider)
+    {
+        _apiClient = apiClient;
+        _dialogProvider = dialogProvider;
+        LoadCommand = new RelayCommand(Reload);
         DeleteCommand = new RelayCommand(Delete);
         AddCommand = new RelayCommand(Add);
         UpdateCommand = new RelayCommand(Update);
@@ -87,11 +93,25 @@ public class MainWindowViewModel : INotifyPropertyChanged
         DeleteOrderCommand = new RelayCommand(DeleteOrder);
     }
 
+    private async Task Reload()
+    {
+        try
+        {
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            _dialogProvider.ShowError(ex.Message);
+        }
+    }
+
     private async Task LoadData()
     {
-        Products.Clear();
-
         var products = await _apiClient.GetProducts(SearchText);
+        var categories = await _apiClient.GetCategories();
+        var orders = await _apiClient.GetOrders(OrderSearchText);
+
+        Products.Clear();
 
         foreach (var product in products)
         {
@@ -100,16 +120,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         Categories.Clear();
 
-        var categories = await _apiClient.GetCategories();
-
         foreach (var category in categories)
         {
             Categories.Add(category);
         }
 
         Orders.Clear();
-
-        var orders = await _apiClient.GetOrders(OrderSearchText);
 
         foreach (var order in orders)
         {
@@ -179,14 +195,15 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     private async Task DeleteOrder()
     {
-        if (SelectedOrder == null)
+        var order = SelectedOrder;
+        if (order == null)
         {
             _dialogProvider.ShowError("Select order first");
             return;
         }
 
         var confirm = _dialogProvider.Confirm(
-            $"Delete order #{SelectedOrder.Id}?");
+            $"Delete order #{order.Id}?");
 
         if (!confirm)
         {
@@ -195,9 +212,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         try
         {
-            await _apiClient.DeleteOrder(SelectedOrder.Id);
+            await _apiClient.DeleteOrder(order.Id);
 
-            Orders.Remove(SelectedOrder);
+            Orders.Remove(order);
 
             _dialogProvider.ShowMessage("Order deleted");
         }
@@ -209,14 +226,15 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     private async Task Delete()
     {
-        if (SelectedProduct == null)
+        var product = SelectedProduct;
+        if (product == null)
         {
             _dialogProvider.ShowError("Select product first");
             return;
         }
 
         var confirm = _dialogProvider.Confirm(
-            $"Delete {SelectedProduct.Name}?");
+            $"Delete {product.Name}?");
 
         if (!confirm)
         {
@@ -225,9 +243,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         try
         {
-            await _apiClient.DeleteProduct(SelectedProduct.Id);
+            await _apiClient.DeleteProduct(product.Id);
 
-            Products.Remove(SelectedProduct);
+            Products.Remove(product);
 
             _dialogProvider.ShowMessage("Product deleted");
         }
